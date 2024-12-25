@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  graphql-engine:
+    image: hasura/graphql-engine:v2.42.0
+    ports:
+      - "8080:8080"
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      data-connector-agent:
+        condition: service_healthy
+  data-connector-agent:
+    image: hasura/graphql-data-connector:v2.42.0
+    restart: always
+    ports:
+      - 8081:8081
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/api/v1/athena/health"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+  actions-backend-api:
+    hostname: 'actions-backend.api'
+    build:
+      dockerfile: ./Dockerfile
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    # uncomment for dev env
+    #entrypoint: 'npm run start-dev'
+    #volumes:
+    #  - ./controllers:/app/controllers
+    #  - ./middlewares:/app/middlewares
+    #  - ./interfaces:/app/interfaces
+    #  - ./hasura:/app/hasura
+    #  - ./services:/app/services
+    #  - ./index.ts:/app/index.ts
+volumes:
+  db_data:
