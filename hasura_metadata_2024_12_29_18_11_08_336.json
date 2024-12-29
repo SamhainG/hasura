@@ -1,0 +1,1511 @@
+{
+  "resource_version": 6,
+  "metadata": {
+    "version": 3,
+    "sources": [
+      {
+        "name": "Local",
+        "kind": "postgres",
+        "tables": [
+          {
+            "table": {
+              "name": "collections",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "collections_vs_authors",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "collection_id",
+                    "table": {
+                      "name": "collections_vs_authors",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "collections_vs_authors",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "user",
+                "using": {
+                  "foreign_key_constraint_on": "user_id"
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "collections_vs_images",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "collection",
+                "using": {
+                  "foreign_key_constraint_on": "collection_id"
+                }
+              },
+              {
+                "name": "image",
+                "using": {
+                  "foreign_key_constraint_on": "image_id"
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "author",
+                "permission": {
+                  "check": {
+                    "_and": [
+                      {
+                        "image": {
+                          "user_id": {
+                            "_eq": "X-Hasura-User-Id"
+                          }
+                        }
+                      },
+                      {
+                        "collection": {
+                          "collections_vs_authors": {
+                            "user_id": {
+                              "_eq": "X-Hasura-User-Id"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "collection_id",
+                    "image_id"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "author",
+                "permission": {
+                  "columns": [
+                    "collection_id",
+                    "image_id"
+                  ],
+                  "filter": {
+                    "_and": [
+                      {
+                        "image": {
+                          "user_id": {
+                            "_eq": "X-Hasura-User-Id"
+                          }
+                        }
+                      },
+                      {
+                        "collection": {
+                          "collections_vs_authors": {
+                            "user_id": {
+                              "_eq": "X-Hasura-User-Id"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": ""
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "author",
+                "permission": {
+                  "filter": {
+                    "_and": [
+                      {
+                        "image": {
+                          "user_id": {
+                            "_eq": "X-Hasura-User-Id"
+                          }
+                        }
+                      },
+                      {
+                        "collection": {
+                          "collections_vs_authors": {
+                            "user_id": {
+                              "_eq": "X-Hasura-User-Id"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "images",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "user",
+                "using": {
+                  "foreign_key_constraint_on": "user_id"
+                }
+              }
+            ],
+            "array_relationships": [
+              {
+                "name": "collections_vs_images",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "image_id",
+                    "table": {
+                      "name": "collections_vs_images",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "tags_vs_images",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "image_id",
+                    "table": {
+                      "name": "tags_vs_images",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "author",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "image_id",
+                    "url",
+                    "user_id"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "author",
+                "permission": {
+                  "columns": [
+                    "image_id",
+                    "status",
+                    "url"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              },
+              {
+                "role": "public",
+                "permission": {
+                  "columns": [
+                    "status",
+                    "url",
+                    "created_at",
+                    "image_id",
+                    "user_id"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ],
+            "update_permissions": [
+              {
+                "role": "author",
+                "permission": {
+                  "columns": [
+                    "status"
+                  ],
+                  "filter": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  },
+                  "check": null
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "tags",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "tags_vs_images",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "tag_id",
+                    "table": {
+                      "name": "tags_vs_images",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "author",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "name"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "author",
+                "permission": {
+                  "columns": [
+                    "tag_id"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "tags_vs_images",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "image",
+                "using": {
+                  "foreign_key_constraint_on": "image_id"
+                }
+              },
+              {
+                "name": "tag",
+                "using": {
+                  "foreign_key_constraint_on": "tag_id"
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "author",
+                "permission": {
+                  "check": {
+                    "_or": [
+                      {
+                        "image": {
+                          "user_id": {
+                            "_eq": "X-Hasura-User-Id"
+                          }
+                        }
+                      },
+                      {
+                        "image": {
+                          "collections_vs_images": {
+                            "collection": {
+                              "collections_vs_authors": {
+                                "user_id": {
+                                  "_eq": "X-Hasura-User-Id"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "columns": [
+                    "image_id",
+                    "tag_id"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "author",
+                "permission": {
+                  "columns": [
+                    "image_id",
+                    "tag_id"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "users",
+              "schema": "public"
+            },
+            "array_relationships": [
+              {
+                "name": "users_vs_roles",
+                "using": {
+                  "foreign_key_constraint_on": {
+                    "column": "user_id",
+                    "table": {
+                      "name": "users_vs_roles",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "insert_permissions": [
+              {
+                "role": "public",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "email",
+                    "password",
+                    "user_id"
+                  ]
+                },
+                "comment": ""
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "public",
+                "permission": {
+                  "columns": [
+                    "email",
+                    "password",
+                    "user_id"
+                  ],
+                  "filter": {},
+                  "limit": 1
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "users_vs_roles",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "user",
+                "using": {
+                  "foreign_key_constraint_on": "user_id"
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "author",
+                "permission": {
+                  "columns": [],
+                  "filter": {
+                    "user_id": {
+                      "_eq": "X-Hasura-User-Id"
+                    }
+                  }
+                },
+                "comment": ""
+              },
+              {
+                "role": "public",
+                "permission": {
+                  "columns": [
+                    "role",
+                    "user_id"
+                  ],
+                  "filter": {},
+                  "limit": 1
+                },
+                "comment": ""
+              }
+            ]
+          }
+        ],
+        "native_queries": [
+          {
+            "arguments": {
+              "search_tag": {
+                "description": "",
+                "nullable": false,
+                "type": "text"
+              }
+            },
+            "code": "SELECT image_id, url, created_at, status, user_id, tags, collections FROM (\n    SELECT i.image_id, i.url, i.created_at, i.status, i.user_id, string_agg(DISTINCT t.name, ',') as tags, string_agg(DISTINCT c.collection_name, ',') as collections\n    FROM public.tags t\n    INNER JOIN public.tags_vs_images tvi ON t.tag_id=tvi.tag_id\n    INNER JOIN public.images i ON tvi.image_id=i.image_id\n    LEFT JOIN public.collections_vs_images cvi ON i.image_id=cvi.image_id\n    LEFT JOIN public.collections c ON cvi.collection_id=c.collection_id\n    GROUP BY i.image_id\n) tmp\nWHERE lower(tags) similar to ('%' || {{search_tag}} || '%')",
+            "returns": "ImagesExtended",
+            "root_field_name": "ImagesByTagsInCollections"
+          },
+          {
+            "arguments": {},
+            "code": "SELECT i.image_id, i.url, i.created_at, i.status, i.user_id, t.name as tag_name, c.collection_name\nFROM public.images i\nINNER JOIN public.tags_vs_images tvi ON i.image_id=tvi.image_id\nINNER JOIN public.tags t ON tvi.tag_id=t.tag_id\nINNER JOIN public.collections_vs_images cvi ON i.image_id=cvi.image_id\nINNER JOIN public.collections c ON c.collection_id=cvi.collection_id",
+            "returns": "ImagesExV3",
+            "root_field_name": "ImagesByTagsInCollectionsV2"
+          },
+          {
+            "arguments": {
+              "user_id": {
+                "description": "",
+                "nullable": false,
+                "type": "uuid"
+              }
+            },
+            "code": "SELECT iii.image_id, iii.url, iii.created_at, iii.status, iii.user_id, 2 as prio\nFROM public.images iii\nUNION\nSELECT i.image_id, i.url, i.created_at, i.status, i.user_id, 0 as prio\nFROM public.images i \nWHERE i.user_id={{user_id}}\nUNION \nSELECT ii.image_id, ii.url, ii.created_at, ii.status, ii.user_id, 1 as prio\nFROM public.collections_vs_authors cva \nINNER JOIN public.collections_vs_images cvi ON cva.collection_id=cvi.collection_id\nINNER JOIN public.images ii ON ii.image_id=cvi.image_id\nWHERE cva.user_id={{user_id}}\nORDER BY prio asc, created_at desc",
+            "returns": "Images",
+            "root_field_name": "ImagesForTheAuthorInCorrectOrder"
+          }
+        ],
+        "logical_models": [
+          {
+            "fields": [
+              {
+                "name": "image_id",
+                "type": {
+                  "nullable": false,
+                  "scalar": "uuid"
+                }
+              },
+              {
+                "name": "url",
+                "type": {
+                  "nullable": false,
+                  "scalar": "text"
+                }
+              },
+              {
+                "name": "created_at",
+                "type": {
+                  "nullable": false,
+                  "scalar": "timestamptz"
+                }
+              },
+              {
+                "name": "status",
+                "type": {
+                  "nullable": false,
+                  "scalar": "text"
+                }
+              },
+              {
+                "name": "user_id",
+                "type": {
+                  "nullable": false,
+                  "scalar": "uuid"
+                }
+              }
+            ],
+            "name": "Images"
+          },
+          {
+            "fields": [
+              {
+                "name": "image_id",
+                "type": {
+                  "nullable": false,
+                  "scalar": "uuid"
+                }
+              },
+              {
+                "name": "url",
+                "type": {
+                  "nullable": false,
+                  "scalar": "text"
+                }
+              },
+              {
+                "name": "created_at",
+                "type": {
+                  "nullable": false,
+                  "scalar": "timestamptz"
+                }
+              },
+              {
+                "name": "status",
+                "type": {
+                  "nullable": false,
+                  "scalar": "text"
+                }
+              },
+              {
+                "name": "tag_name",
+                "type": {
+                  "nullable": false,
+                  "scalar": "text"
+                }
+              },
+              {
+                "name": "collection_name",
+                "type": {
+                  "nullable": false,
+                  "scalar": "text"
+                }
+              }
+            ],
+            "name": "ImagesExV3"
+          },
+          {
+            "fields": [
+              {
+                "name": "image_id",
+                "type": {
+                  "nullable": false,
+                  "scalar": "uuid"
+                }
+              },
+              {
+                "name": "created_at",
+                "type": {
+                  "nullable": false,
+                  "scalar": "timestamptz"
+                }
+              },
+              {
+                "name": "status",
+                "type": {
+                  "nullable": false,
+                  "scalar": "text"
+                }
+              },
+              {
+                "name": "url",
+                "type": {
+                  "nullable": false,
+                  "scalar": "text"
+                }
+              },
+              {
+                "name": "user_id",
+                "type": {
+                  "nullable": false,
+                  "scalar": "uuid"
+                }
+              },
+              {
+                "name": "tags",
+                "type": {
+                  "nullable": false,
+                  "scalar": "text"
+                }
+              },
+              {
+                "name": "collections",
+                "type": {
+                  "nullable": false,
+                  "scalar": "text"
+                }
+              }
+            ],
+            "name": "ImagesExtended"
+          },
+          {
+            "fields": [
+              {
+                "name": "image_id",
+                "type": {
+                  "nullable": false,
+                  "scalar": "uuid"
+                }
+              },
+              {
+                "name": "url",
+                "type": {
+                  "nullable": false,
+                  "scalar": "text"
+                }
+              },
+              {
+                "name": "created_at",
+                "type": {
+                  "nullable": false,
+                  "scalar": "timestamptz"
+                }
+              },
+              {
+                "name": "status",
+                "type": {
+                  "nullable": false,
+                  "scalar": "text"
+                }
+              },
+              {
+                "name": "tags",
+                "type": {
+                  "array": {
+                    "nullable": false,
+                    "scalar": "text"
+                  },
+                  "nullable": false
+                }
+              },
+              {
+                "name": "collections",
+                "type": {
+                  "array": {
+                    "nullable": false,
+                    "scalar": "text"
+                  },
+                  "nullable": false
+                }
+              }
+            ],
+            "name": "ImagesExtenedV2"
+          }
+        ],
+        "configuration": {
+          "connection_info": {
+            "database_url": {
+              "from_env": "PG_DATABASE_URL"
+            },
+            "isolation_level": "read-committed",
+            "use_prepared_statements": false
+          }
+        }
+      }
+    ],
+    "actions": [
+      {
+        "name": "AddAuthorByToken",
+        "definition": {
+          "handler": "http://actions-backend.api:3000/users/roles",
+          "output_type": "AddAuthorByTokenOutput",
+          "ignored_client_headers": [
+            "Content-Length",
+            "Content-MD5",
+            "User-Agent",
+            "Host",
+            "Origin",
+            "Referer",
+            "Accept",
+            "Accept-Encoding",
+            "Accept-Language",
+            "Accept-Datetime",
+            "Cache-Control",
+            "Connection",
+            "DNT",
+            "Content-Type"
+          ],
+          "arguments": [
+            {
+              "name": "token",
+              "type": "String!"
+            },
+            {
+              "name": "user_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "role",
+              "type": "String!"
+            }
+          ],
+          "request_transform": {
+            "method": "POST",
+            "query_params": {
+              "jwt": "{{$body.input.token}}"
+            },
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "mutation",
+          "kind": "synchronous"
+        }
+      },
+      {
+        "name": "AddAuthorToCollectionByToken",
+        "definition": {
+          "handler": "http://actions-backend.api:3000/collections/authors",
+          "output_type": "AddAuthorToCollectionByTokenOutput",
+          "ignored_client_headers": [
+            "Content-Length",
+            "Content-MD5",
+            "User-Agent",
+            "Host",
+            "Origin",
+            "Referer",
+            "Accept",
+            "Accept-Encoding",
+            "Accept-Language",
+            "Accept-Datetime",
+            "Cache-Control",
+            "Connection",
+            "DNT",
+            "Content-Type"
+          ],
+          "arguments": [
+            {
+              "name": "user_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "collection_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "token",
+              "type": "String!"
+            }
+          ],
+          "request_transform": {
+            "method": "PUT",
+            "query_params": {
+              "jwt": "{{$body.input.token}}"
+            },
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "mutation",
+          "kind": "synchronous"
+        }
+      },
+      {
+        "name": "AddCollection",
+        "definition": {
+          "handler": "http://actions-backend.api:3000/collections",
+          "output_type": "AddCollectionOutput",
+          "ignored_client_headers": [
+            "Content-Length",
+            "Content-MD5",
+            "User-Agent",
+            "Host",
+            "Origin",
+            "Referer",
+            "Accept",
+            "Accept-Encoding",
+            "Accept-Language",
+            "Accept-Datetime",
+            "Cache-Control",
+            "Connection",
+            "DNT",
+            "Content-Type"
+          ],
+          "arguments": [
+            {
+              "name": "token",
+              "type": "String!"
+            },
+            {
+              "name": "collection_name",
+              "type": "String!"
+            }
+          ],
+          "request_transform": {
+            "method": "POST",
+            "query_params": {
+              "jwt": "{{$body.input.token}}"
+            },
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "mutation",
+          "kind": "synchronous"
+        }
+      },
+      {
+        "name": "AddImageByToken",
+        "definition": {
+          "handler": "http://actions-backend.api:3000/images",
+          "output_type": "AddImageByTokenOutput",
+          "ignored_client_headers": [
+            "Content-Length",
+            "Content-MD5",
+            "User-Agent",
+            "Host",
+            "Origin",
+            "Referer",
+            "Accept",
+            "Accept-Encoding",
+            "Accept-Language",
+            "Accept-Datetime",
+            "Cache-Control",
+            "Connection",
+            "DNT",
+            "Content-Type"
+          ],
+          "arguments": [
+            {
+              "name": "base64",
+              "type": "String"
+            },
+            {
+              "name": "link",
+              "type": "String"
+            },
+            {
+              "name": "token",
+              "type": "String!"
+            }
+          ],
+          "request_transform": {
+            "method": "POST",
+            "query_params": {
+              "jwt": "{{$body.input.token}}"
+            },
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "mutation",
+          "kind": "synchronous"
+        }
+      },
+      {
+        "name": "AddImageVsCollectionRelationMutationByToken",
+        "definition": {
+          "handler": "http://actions-backend.api:3000/collections/images",
+          "output_type": "AddImageVsCollectionRelationMutationOutput",
+          "ignored_client_headers": [
+            "Content-Length",
+            "Content-MD5",
+            "User-Agent",
+            "Host",
+            "Origin",
+            "Referer",
+            "Accept",
+            "Accept-Encoding",
+            "Accept-Language",
+            "Accept-Datetime",
+            "Cache-Control",
+            "Connection",
+            "DNT",
+            "Content-Type"
+          ],
+          "arguments": [
+            {
+              "name": "collection_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "image_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "token",
+              "type": "String!"
+            }
+          ],
+          "request_transform": {
+            "method": "PUT",
+            "query_params": {
+              "jwt": "{{$body.input.token}}"
+            },
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "mutation",
+          "kind": "synchronous"
+        }
+      },
+      {
+        "name": "AddTagToImageByToken",
+        "definition": {
+          "handler": "http://actions-backend.api:3000/images/tags",
+          "output_type": "AddTagsToImageByTokenOutput",
+          "ignored_client_headers": [
+            "Content-Length",
+            "Content-MD5",
+            "User-Agent",
+            "Host",
+            "Origin",
+            "Referer",
+            "Accept",
+            "Accept-Encoding",
+            "Accept-Language",
+            "Accept-Datetime",
+            "Cache-Control",
+            "Connection",
+            "DNT",
+            "Content-Type"
+          ],
+          "arguments": [
+            {
+              "name": "tag_name",
+              "type": "String!"
+            },
+            {
+              "name": "image_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "token",
+              "type": "String!"
+            }
+          ],
+          "request_transform": {
+            "method": "POST",
+            "query_params": {
+              "jwt": "{{$body.input.token}}"
+            },
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "mutation",
+          "kind": "synchronous"
+        }
+      },
+      {
+        "name": "AddUser",
+        "definition": {
+          "handler": "http://actions-backend.api:3000/users",
+          "output_type": "AddUserOutput",
+          "ignored_client_headers": [
+            "Content-Length",
+            "Content-MD5",
+            "User-Agent",
+            "Host",
+            "Origin",
+            "Referer",
+            "Accept",
+            "Accept-Encoding",
+            "Accept-Language",
+            "Accept-Datetime",
+            "Cache-Control",
+            "Connection",
+            "DNT",
+            "Content-Type"
+          ],
+          "arguments": [
+            {
+              "name": "email",
+              "type": "String!"
+            },
+            {
+              "name": "password",
+              "type": "String!"
+            }
+          ],
+          "request_transform": {
+            "method": "POST",
+            "query_params": {},
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "mutation",
+          "kind": "synchronous"
+        }
+      },
+      {
+        "name": "ImagesForPublic",
+        "definition": {
+          "handler": "http://actions-backend.api:3000/public/images",
+          "output_type": "[ImagesForPublicOutput]",
+          "ignored_client_headers": [
+            "Content-Length",
+            "Content-MD5",
+            "User-Agent",
+            "Host",
+            "Origin",
+            "Referer",
+            "Accept",
+            "Accept-Encoding",
+            "Accept-Language",
+            "Accept-Datetime",
+            "Cache-Control",
+            "Connection",
+            "DNT",
+            "Content-Type"
+          ],
+          "arguments": [
+            {
+              "name": "image_id",
+              "type": "uuid"
+            },
+            {
+              "name": "status",
+              "type": "String"
+            },
+            {
+              "name": "url",
+              "type": "String"
+            },
+            {
+              "name": "user_id",
+              "type": "uuid"
+            }
+          ],
+          "request_transform": {
+            "method": "POST",
+            "query_params": {},
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "query"
+        }
+      },
+      {
+        "name": "SignIn",
+        "definition": {
+          "handler": "http://actions-backend.api:3000/signin",
+          "output_type": "SignInOutput",
+          "ignored_client_headers": [
+            "Content-Length",
+            "Content-MD5",
+            "User-Agent",
+            "Host",
+            "Origin",
+            "Referer",
+            "Accept",
+            "Accept-Encoding",
+            "Accept-Language",
+            "Accept-Datetime",
+            "Cache-Control",
+            "Connection",
+            "DNT",
+            "Content-Type"
+          ],
+          "arguments": [
+            {
+              "name": "email",
+              "type": "String!"
+            },
+            {
+              "name": "password",
+              "type": "String!"
+            }
+          ],
+          "request_transform": {
+            "method": "POST",
+            "query_params": {},
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "query"
+        }
+      },
+      {
+        "name": "UpdateImageStatusByToken",
+        "definition": {
+          "handler": "http://actions-backend.api:3000/images",
+          "output_type": "UpdateImageStatusByTokenOutput",
+          "ignored_client_headers": [
+            "Content-Length",
+            "Content-MD5",
+            "User-Agent",
+            "Host",
+            "Origin",
+            "Referer",
+            "Accept",
+            "Accept-Encoding",
+            "Accept-Language",
+            "Accept-Datetime",
+            "Cache-Control",
+            "Connection",
+            "DNT",
+            "Content-Type"
+          ],
+          "arguments": [
+            {
+              "name": "token",
+              "type": "String!"
+            },
+            {
+              "name": "image_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "status",
+              "type": "String!"
+            }
+          ],
+          "request_transform": {
+            "method": "PUT",
+            "query_params": {
+              "jwt": "{{$body.input.token}}"
+            },
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "mutation",
+          "kind": "synchronous"
+        }
+      },
+      {
+        "name": "currencyConverter",
+        "definition": {
+          "handler": "http://actions-backend.api:3000/author",
+          "output_type": "ConvertedCurrency",
+          "ignored_client_headers": [
+            "Content-Length",
+            "Content-MD5",
+            "User-Agent",
+            "Host",
+            "Origin",
+            "Referer",
+            "Accept",
+            "Accept-Encoding",
+            "Accept-Language",
+            "Accept-Datetime",
+            "Cache-Control",
+            "Connection",
+            "DNT",
+            "Content-Type"
+          ],
+          "arguments": [
+            {
+              "name": "CurrencyInfo",
+              "type": "InputParams!"
+            }
+          ],
+          "request_transform": {
+            "body": {
+              "action": "transform",
+              "template": "{\n  \"users\": {\n    \"from\": {{$body.input.CurrencyInfo.from}},\n    \"to\": {{$body.input.CurrencyInfo.to}},\n    \"amt\": {{$body.input.CurrencyInfo.amt}}\n  }\n}"
+            },
+            "method": "GET",
+            "query_params": {},
+            "request_headers": {
+              "add_headers": {},
+              "remove_headers": [
+                "content-type"
+              ]
+            },
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "query"
+        },
+        "comment": "addAuthor"
+      },
+      {
+        "name": "generatePasswordHash",
+        "definition": {
+          "handler": "http://actions-backend.api:3000/md5",
+          "output_type": "HashedPassword",
+          "ignored_client_headers": [
+            "Content-Length",
+            "Content-MD5",
+            "User-Agent",
+            "Host",
+            "Origin",
+            "Referer",
+            "Accept",
+            "Accept-Encoding",
+            "Accept-Language",
+            "Accept-Datetime",
+            "Cache-Control",
+            "Connection",
+            "DNT",
+            "Content-Type"
+          ],
+          "arguments": [
+            {
+              "name": "arg1",
+              "type": "InputParams"
+            }
+          ],
+          "request_transform": {
+            "body": {
+              "action": "transform",
+              "template": "{\n  \"password\": {{$body.input.arg1.password}}\n}"
+            },
+            "method": "POST",
+            "query_params": {},
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "query"
+        },
+        "comment": "generatePasswordHash"
+      }
+    ],
+    "custom_types": {
+      "input_objects": [
+        {
+          "name": "SampleInput",
+          "fields": [
+            {
+              "name": "email",
+              "type": "String!"
+            },
+            {
+              "name": "role",
+              "type": "String!"
+            }
+          ]
+        },
+        {
+          "name": "InputParams",
+          "fields": [
+            {
+              "name": "password",
+              "type": "String"
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "name": "SampleOutput",
+          "fields": [
+            {
+              "name": "collection_id",
+              "type": "uuid!"
+            }
+          ]
+        },
+        {
+          "name": "Info",
+          "fields": [
+            {
+              "name": "rate",
+              "type": "Float"
+            }
+          ]
+        },
+        {
+          "name": "Query",
+          "fields": [
+            {
+              "name": "amount",
+              "type": "Int"
+            },
+            {
+              "name": "from",
+              "type": "String"
+            },
+            {
+              "name": "to",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "ConvertedCurrency",
+          "fields": [
+            {
+              "name": "date",
+              "type": "String"
+            },
+            {
+              "name": "info",
+              "type": "Info"
+            },
+            {
+              "name": "query",
+              "type": "Query"
+            },
+            {
+              "name": "result",
+              "type": "Float"
+            },
+            {
+              "name": "success",
+              "type": "Boolean"
+            }
+          ]
+        },
+        {
+          "name": "HashedPassword",
+          "fields": [
+            {
+              "name": "hash",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "AddUserOutput",
+          "fields": [
+            {
+              "name": "user_id",
+              "type": "uuid!"
+            }
+          ]
+        },
+        {
+          "name": "AddRoleOutput",
+          "fields": [
+            {
+              "name": "role",
+              "type": "String!"
+            },
+            {
+              "name": "user_id",
+              "type": "uuid!"
+            }
+          ]
+        },
+        {
+          "name": "SignInOutput",
+          "fields": [
+            {
+              "name": "jwt",
+              "type": "String!"
+            }
+          ]
+        },
+        {
+          "name": "AddCollectionOutput",
+          "fields": [
+            {
+              "name": "collection_id",
+              "type": "uuid!"
+            }
+          ]
+        },
+        {
+          "name": "AddAuthorByTokenOutput",
+          "fields": [
+            {
+              "name": "role",
+              "type": "String!"
+            },
+            {
+              "name": "user_id",
+              "type": "uuid!"
+            }
+          ]
+        },
+        {
+          "name": "AddAuthorToCollectionByTokenOutput",
+          "fields": [
+            {
+              "name": "collection_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "user_id",
+              "type": "uuid!"
+            }
+          ]
+        },
+        {
+          "name": "AddImageByTokenOutput",
+          "fields": [
+            {
+              "name": "image_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "url",
+              "type": "String!"
+            }
+          ]
+        },
+        {
+          "name": "UpdateImageStatusByTokenOutput",
+          "fields": [
+            {
+              "name": "image_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "status",
+              "type": "String!"
+            }
+          ]
+        },
+        {
+          "name": "File",
+          "fields": [
+            {
+              "name": "url",
+              "type": "String!"
+            }
+          ]
+        },
+        {
+          "name": "AddTagsToImageByTokenOutput",
+          "fields": [
+            {
+              "name": "tag_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "image_id",
+              "type": "uuid!"
+            }
+          ]
+        },
+        {
+          "name": "AddImageVsCollectionRelationMutationOutput",
+          "fields": [
+            {
+              "name": "collection_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "image_id",
+              "type": "uuid!"
+            }
+          ]
+        },
+        {
+          "name": "ImagesForPublicOutput",
+          "fields": [
+            {
+              "name": "image_id",
+              "type": "uuid!"
+            },
+            {
+              "name": "status",
+              "type": "String!"
+            },
+            {
+              "name": "url",
+              "type": "String!"
+            },
+            {
+              "name": "user_id",
+              "type": "uuid!"
+            }
+          ]
+        }
+      ],
+      "scalars": [
+        {
+          "name": "Upload"
+        }
+      ]
+    },
+    "backend_configs": {
+      "dataconnector": {
+        "athena": {
+          "uri": "http://data-connector-agent:8081/api/v1/athena"
+        },
+        "mariadb": {
+          "uri": "http://data-connector-agent:8081/api/v1/mariadb"
+        },
+        "mysql8": {
+          "uri": "http://data-connector-agent:8081/api/v1/mysql"
+        },
+        "oracle": {
+          "uri": "http://data-connector-agent:8081/api/v1/oracle"
+        },
+        "snowflake": {
+          "uri": "http://data-connector-agent:8081/api/v1/snowflake"
+        }
+      }
+    }
+  }
+}

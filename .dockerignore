@@ -1,0 +1,6 @@
+.idea
+node_modules
+tests
+docker-compose.yml
+.gitignore
+Dockerfile
