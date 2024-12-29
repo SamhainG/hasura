@@ -1,5 +1,5 @@
 // Import the framework and instantiate it
-import Fastify, {FastifyReply, FastifyRequest} from 'fastify'
+import Fastify from 'fastify'
 import {SigninController} from "./controllers/signin";
 import {UsersController} from "./controllers/users"
 import {RolesController} from "./controllers/roles";
@@ -25,7 +25,7 @@ declare module 'fastify' {
 }
 
 
-let fastify = Fastify({
+const fastify = Fastify({
     logger: true
 })
 

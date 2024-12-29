@@ -1,6 +1,5 @@
 import {IPostAction} from "../interfaces/IPostAction";
 import {FastifyReply, FastifyRequest} from "fastify";
-import {hasura} from '../config/default';
 import {createHash} from 'crypto';
 import {
     HASURA_ADD_USER_MUTATION,

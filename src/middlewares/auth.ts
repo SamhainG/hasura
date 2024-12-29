@@ -2,12 +2,9 @@
 
 import * as jwt from "jsonwebtoken";
 import {
-    HASURA_PASSWORD_SALT,
     HASURA_JWT_SALT,
-    HASURA_JWT_EXPIRE_SEC,
 } from "../hasura/constants";
 import {FastifyReply, FastifyRequest, HookHandlerDoneFunction} from "fastify";
-
 
 
 export const authMiddleware = function(request: FastifyRequest, reply: FastifyReply, done: HookHandlerDoneFunction){

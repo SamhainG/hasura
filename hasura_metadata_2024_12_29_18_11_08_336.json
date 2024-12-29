@@ -1,5 +1,5 @@
 {
-  "resource_version": 163,
+  "resource_version": 6,
   "metadata": {
     "version": 3,
     "sources": [
@@ -469,6 +469,12 @@
             "root_field_name": "ImagesByTagsInCollections"
           },
           {
+            "arguments": {},
+            "code": "SELECT i.image_id, i.url, i.created_at, i.status, i.user_id, t.name as tag_name, c.collection_name\nFROM public.images i\nINNER JOIN public.tags_vs_images tvi ON i.image_id=tvi.image_id\nINNER JOIN public.tags t ON tvi.tag_id=t.tag_id\nINNER JOIN public.collections_vs_images cvi ON i.image_id=cvi.image_id\nINNER JOIN public.collections c ON c.collection_id=cvi.collection_id",
+            "returns": "ImagesExV3",
+            "root_field_name": "ImagesByTagsInCollectionsV2"
+          },
+          {
             "arguments": {
               "user_id": {
                 "description": "",
@@ -553,20 +559,17 @@
                 }
               },
               {
-                "name": "tags",
+                "name": "tag_name",
                 "type": {
                   "nullable": false,
                   "scalar": "text"
                 }
               },
               {
-                "name": "collections",
+                "name": "collection_name",
                 "type": {
-                  "array": {
-                    "nullable": false,
-                    "scalar": "uuid"
-                  },
-                  "nullable": false
+                  "nullable": false,
+                  "scalar": "text"
                 }
               }
             ],

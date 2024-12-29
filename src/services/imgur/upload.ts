@@ -1,4 +1,4 @@
-import {imgur} from '../../config/default';
+import {imgur} from '../../../config/default';
 import {ImgurClient} from 'imgur';
 
 const client = new ImgurClient({clientId: imgur.clientId});

@@ -1,4 +1,13 @@
 # hasura
+
+## Updates  
+
+### 29.12.2024
+
+* змінив структуру проекту - тепер він створений за допомогою hasura cli
+* додав init міграцію
+* змінив запит для пошуку по тегам і колекціям - тепер без LIKE
+
 # Змінні оточення
 
 Вони всі зберігаються в ```.env``` файлі у корню цього проекта. 
@@ -583,41 +592,39 @@ query ImagesForTheAuthorInCorrectOrder($user_id: uuid!) {
 ```
 ## Знайти картинки по тегу в одній або декількох колекціях
 
+Update: почитав уважніше ТЗ і зрозумів, що LEFT JOIN там навіть не потрібен бо в усіх умовах 1 і більше.
+
+В схемі БД нічого не міняв
+
 ```sql
-SELECT image_id, url, created_at, status, user_id, tags, collections FROM (
-    SELECT i.image_id, i.url, i.created_at, i.status, i.user_id, string_agg(DISTINCT t.name, ',') as tags, string_agg(DISTINCT c.collection_name, ',') as collections
-    FROM public.tags t
-    INNER JOIN public.tags_vs_images tvi ON t.tag_id=tvi.tag_id
-    INNER JOIN public.images i ON tvi.image_id=i.image_id
-    LEFT JOIN public.collections_vs_images cvi ON i.image_id=cvi.image_id
-    LEFT JOIN public.collections c ON cvi.collection_id=c.collection_id
-    GROUP BY i.image_id
-) tmp
-WHERE lower(tags) similar to ('%' || {{search_tag}} || '%')
+SELECT i.image_id, i.url, i.created_at, i.status, i.user_id, t.name as tag_name, c.collection_name
+FROM public.images i
+INNER JOIN public.tags_vs_images tvi ON i.image_id=tvi.image_id
+INNER JOIN public.tags t ON tvi.tag_id=t.tag_id
+INNER JOIN public.collections_vs_images cvi ON i.image_id=cvi.image_id
+INNER JOIN public.collections c ON c.collection_id=cvi.collection_id
 ```
 
 ```graphql
-query ImagesByTagsInCollections {
-  ImagesByTagsInCollections( args: {
-    search_tag: "test|super"
-  }, where: {
-    _or: [
+query ImagesByTagsInCollectionsV2 {
+  ImagesByTagsInCollectionsV2(where: {
+    _and: [
       {
-        collections: {
-          _is_null:true
+        tag_name: {
+          _in: ["super new tag","testtag"]
         }
       },
       {
-        collections: {
-          _similar: "%test%"
+        collection_name: {
+          _in: ["testCollection5"]
         }
       }
     ]
-  }) {
+  }){
+    collection_name,
+    tag_name,
     image_id,
     status,
-    tags,
-    collections,
     url
   }
 }
@@ -628,27 +635,20 @@ query ImagesByTagsInCollections {
 ```json
 {
   "data": {
-    "ImagesByTagsInCollections": [
+    "ImagesByTagsInCollectionsV2": [
       {
+        "collection_name": "testCollection5",
+        "tag_name": "testtag",
         "image_id": "4b4774ed-1a4b-47d2-bcf5-8a49b879a8dc",
         "status": "unchecked",
-        "tags": "super new tag,testtag",
-        "collections": "testCollection5",
         "url": "https://i.imgur.com/wXctydx.png"
       },
       {
-        "image_id": "983d3cb5-cc43-4209-a28a-7790cd147c8e",
+        "collection_name": "testCollection5",
+        "tag_name": "super new tag",
+        "image_id": "4b4774ed-1a4b-47d2-bcf5-8a49b879a8dc",
         "status": "unchecked",
-        "tags": "super new tag",
-        "collections": null,
-        "url": "test_url"
-      },
-      {
-        "image_id": "ac5fc0fb-5fbf-43d7-b2ea-de1bbd326d73",
-        "status": "checked",
-        "tags": "super new tag",
-        "collections": null,
-        "url": "https://my.custom.link/blabla.png"
+        "url": "https://i.imgur.com/wXctydx.png"
       }
     ]
   }

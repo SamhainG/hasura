@@ -1,4 +1,4 @@
-import {hasura} from "../../config/default";
+import {hasura} from "../../../config/default";
 import {HASURA_ROLE_PUBLIC} from '../../hasura/constants';
 
 export class HasuraFetch {
@@ -21,6 +21,7 @@ export class HasuraFetch {
                 headers: {
                     'X-Hasura-Role': this.session?.role || HASURA_ROLE_PUBLIC,
                     'X-Hasura-User-Id': this.session?.user_id || '',
+                    'X-Hasura-Admin-Secret': hasura.headers["X-Hasura-Admin-Secret"] || '',
                 }
             }
         )

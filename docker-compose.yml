@@ -43,11 +43,12 @@ services:
     # uncomment for dev env
     #entrypoint: 'npm run start-dev'
     #volumes:
-    #  - ./controllers:/app/controllers
-    #  - ./middlewares:/app/middlewares
-    #  - ./interfaces:/app/interfaces
-    #  - ./hasura:/app/hasura
-    #  - ./services:/app/services
-    #  - ./index.ts:/app/index.ts
+    #  - ./src/controllers:/app/src/controllers
+    #  - ./src/middlewares:/app/src/middlewares
+    #  - ./src/interfaces:/app/src/interfaces
+    #  - ./src/hasura:/app/src/hasura
+    #  - ./src/services:/app/src/services
+    #  - ./src/index.ts:/app/src/index.ts
+
 volumes:
   db_data:
